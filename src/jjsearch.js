@@ -1,7 +1,7 @@
 /*
- *  jsonsitesearch.js - v1.0.0
+ *  jjsearch.js - v1.0.0
  *  lite search engine writen in JS to process JSON
- *  https://github.com/EldonMcGuinness/jsonsitesearch.js
+ *  https://github.com/EldonMcGuinness/jjsearch.js
  *
  *  Made by Eldon McGuinness
  *  Under MIT License
@@ -14,7 +14,7 @@
  *  Trim whitespaces from splits
  */
 
-var jsonsitesearch = function(callback, source, hotlinking){
+var jjsearch = function(callback, source, hotlinking){
     //Enable and disable debugging
     this.qsdebug = true;
     
@@ -31,7 +31,7 @@ var jsonsitesearch = function(callback, source, hotlinking){
     if (hotlinking){
         window.onload = function () {
             //Grab just the first instance of the "q" item
-            var qs = jsonsitesearch.querystring();
+            var qs = jjsearch.querystring();
             //if (qsdebug == true) console.log(qs["q"]);
             if (typeof(qs["q"]) == "object"){
                 qs = qs["q"][0];
@@ -132,7 +132,7 @@ var jsonsitesearch = function(callback, source, hotlinking){
 // querystring function, borrowed from https://github.com/EldonMcGuinness/querystring.js
 // This is used to parse the querystring and allow for hotlinking
 // to search results
-jsonsitesearch.querystring = function(str) {
+jjsearch.querystring = function(str) {
     var qso = {};
     var qs = (str || document.location.search);
 
