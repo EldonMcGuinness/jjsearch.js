@@ -7,15 +7,16 @@
  *  Under MIT License
  *
  *  Parameters:
- *  
- *  TODO:
- *  Add documentation!
- *  Add Boolean &&
+ *  callback: A function to be run when the search results returns
+ *  source: the source of the search string, this is needed so the
+ *      querystring can be parsed and populated into it when the
+ *      page loads.
+ *  debug: enables debug logging to the console.
  */
 
-var jjsearch = function(callback, source, hotlinking){
+var jjsearch = function(callback, source, debug){
     //Enable and disable debugging
-    this.qsdebug = false;
+    this.qsdebug = debug || false;
     
     // The HTML element's ID that we should pull the search
     // string from
@@ -27,21 +28,19 @@ var jjsearch = function(callback, source, hotlinking){
     // Context for "this", needed in hotlinking to refer to "this"
     var context = this;
 
-    if (hotlinking){
-        window.onload = function () {
-            //Grab just the first instance of the "q" item
-            var qs = jjsearch.querystring();
-            //if (qsdebug == true) console.log(qs["q"]);
-            if (typeof(qs["q"]) == "object"){
-                qs = qs["q"][0];
-            }else if (typeof(qs["q"]) == "string"){
-                qs = qs["q"];
-            }
-            if (typeof(qs) == "string") {
-                context.source.value = context.doSearch(qs);
-            }
-        };
-    }
+    window.onload = function () {
+        //Grab just the first instance of the "q" item
+        var qs = jjsearch.querystring();
+        //if (qsdebug == true) console.log(qs["q"]);
+        if (typeof(qs["q"]) == "object"){
+            qs = qs["q"][0];
+        }else if (typeof(qs["q"]) == "string"){
+            qs = qs["q"];
+        }
+        if (typeof(qs) == "string") {
+            context.source.value = context.doSearch(qs);
+        }
+    };
 
     // Collect the valid hits that match the search terms
     this.getHits = function(terms, json) {
@@ -50,15 +49,10 @@ var jjsearch = function(callback, source, hotlinking){
         if (Array.isArray(terms)) {
             if (this.qsdebug == true) console.log("array found");
         } else {
-            terms = terms.split("||");
-
+            
             // Replace basic boolean objects
-            terms = terms.map(function(n){
-                 return n.replace(/\s*[\+|\*|\?]\s*/g, '.*');
-            });
-
-            // Trim all the terms to remove whitespace
-            terms = terms.map(function(n){return n.trim();});
+            terms = [terms.replace(/\s*[\+\*\?]\s*/g, '.*')
+            .replace('||', '|')];
 
             if (this.qsdebug == true) console.log(terms);
             for (var i = 0; i < json.length; i++) {
@@ -163,7 +157,7 @@ jjsearch.querystring = function(str) {
     for (var i=0; i < qs.length; i++){
         var qi = qs[i].split("=");
 
-        qi = map(qi, function (n) {return decodeURIComponent(n)});
+        qi = qi.map(function (n) {return decodeURIComponent(n)});
 
         if (qso[qi[0]] != undefined){
 
@@ -195,12 +189,5 @@ jjsearch.querystring = function(str) {
         }
     }
 
-    function map(arr, func){
-        for (var i=0; i<arr.length; i++ ){
-            arr[i] = func(arr[i]);
-        }
-        return arr;
-    }
-    
     return qso;
 };
