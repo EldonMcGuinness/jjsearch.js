@@ -59,5 +59,11 @@ contains.
 [search.json](https://progressivethink.in/search.json)
 
 
+### Wildcards and search format
+The default way the engine searches is via a literal search, so
+```"hello how are you"```, would only match that exact string. However,
+it can also use ```(*, ?, +)``` as a wild card. So ```"Hello*how * are"``` would
+match anything that fits the ```"Hello ______ how ______ are"``` pattern.
+
 ## Try it out here:
 https://progressivethink.in/search/?q=querystring
