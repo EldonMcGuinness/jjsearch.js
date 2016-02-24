@@ -11,12 +11,11 @@
  *  TODO:
  *  Add documentation!
  *  Add Boolean &&
- *  Trim whitespaces from splits
  */
 
 var jjsearch = function(callback, source, hotlinking){
     //Enable and disable debugging
-    this.qsdebug = true;
+    this.qsdebug = false;
     
     // The HTML element's ID that we should pull the search
     // string from
@@ -52,9 +51,16 @@ var jjsearch = function(callback, source, hotlinking){
             if (this.qsdebug == true) console.log("array found");
         } else {
             terms = terms.split("||");
-            //terms = [ terms ];
-            if (this.qsdebug == true) console.log(terms);
 
+            // Replace basic boolean objects
+            terms = terms.map(function(n){
+                 return n.replace(/\s*[\+|\*|\?]\s*/g, '.*');
+            });
+
+            // Trim all the terms to remove whitespace
+            terms = terms.map(function(n){return n.trim();});
+
+            if (this.qsdebug == true) console.log(terms);
             for (var i = 0; i < json.length; i++) {
                 for (var j = 0; j < terms.length; j++) {
                     if (this.linkExists(json[i], hits)) {
